@@ -9,9 +9,10 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 ## Bind the socket to a port and listen for connections
-s.bind(('', 9999))
+s.bind(("0.0.0.0", 9999))
 s.listen(5)
 print("Server is listening...")
+print("Server address: {}".format(s.getsockname()[0]))
 
 ## Create a list of clients that are connected to the server
 clients = []
@@ -22,7 +23,7 @@ def handleClient(client):
 
     ## Get the client's name and send a welcome message to them
     name = client.recv(1024).decode('utf-8')
-    client.send("Welcome to the chat room!".encode('utf-8'))
+    client.send("Welcome to the chat room! \nYou can type exit to leave!".encode('utf-8'))
 
     ## Add the client to the list of clients connected to the server and broadcast their connection to all other clients in the chat room
     clients.append(client)
@@ -34,7 +35,7 @@ def handleClient(client):
 
             message = client.recv(1024).decode('utf-8')
 
-            if message == "exit": 
+            if message == "User has disconnected": 
 
                 ## Remove the client from the list of clients connected to the server and broadcast their disconnection to all other clients in the chat room 
                 index = clients.index(client) 
