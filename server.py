@@ -1,8 +1,6 @@
 import socket
 import sys
 import threading
-import time
-import datetime
 
 ## Open a socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
