@@ -1,55 +1,55 @@
 import socket
-import sys
 import threading
-import time
+import sys
 
-## Open a socket
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+# Open a socket and bind it to 0.0.0.0, 9999 then listen for connections and print the server address and port to the terminal.
+s = socket.socket()
+host = "0.0.0.0"
+port = 9999
+s.bind((host, port))
+s.listen(10)
+print("Server is now listening on " + host + ":" + str(port))
 
-## Connect to the server 
-server_address = input("What server address would you like to connect to?: ")
-s.connect((server_address, 9999))
+# Accept connections, and Create a list of all the clients that connect to the server.
+clients = []
+def clientThread(conn, addr):
+    while True:
+        try:
+            message = conn.recv(1024)
+            message = message.decode('ascii')
+            if message:
+                print("<" + addr[0] + "> " + message)
+                message_to_send = "<" + addr[0] + "> " + message
+                broadcast(message_to_send, conn)
+            else:
+                remove(conn)
+                print(str(addr[0]) + " disconnected.")
+        except ConnectionResetError:
+            print(str(addr[0]) + " disconnected.")
+            broadcast(str(addr[0]) + " disconnected.", conn)
+            remove(conn)
+            break
 
-## Get the client's name and send it to the server 
-name = input("Enter your name: ") 
-s.send(name.encode('utf-8')) 
+# Broadcast the connection of the new user to all other users in the chat room.
+def broadcast(message, connection):
+    for client in clients:
+        if client != connection:
+            try:
+                client.send(message.encode('ascii'))
+            except:
+                client.close()
+                remove(client)
 
 
-## Function to handle messages received from the server 
-def receiveMessages(): 
+## Remove the client from the list of clients.
+def remove(connection):
+    if connection in clients:
+        clients.remove(connection)
 
-    while True: 
 
-        try: 
-
-            message = s.recv(1024).decode('utf-8')  
-
-            print(message)  
-
-        except KeyboardInterrupt:
-            continue
-        except:
-            continue
-
-        
-## Create a new thread for receiving messages from the server 
-threading._start_new_thread(receiveMessages, ())  
-
-        
-## Send messages to the server and exit when the user types "exit" 
-while True:  
-
-    message = input()  
-
-    if message == "exit":  
-
-        s.send("User has disconnected".encode('utf-8'))  
-
-        s.close()  
-
-        sys.exit()  
-
-    else:  
-
-        s.send(message.encode('utf-8'))
+## Create a loop, that receives messages from clients and broadcasts them to all other users. Then start a new thread for each client that connects to the server.
+while True:
+    conn, addr = s.accept()
+    clients.append(conn)
+    print(str(addr[0]) + " connected.")
+    threading.Thread(target=clientThread, args=(conn, addr)).start()
