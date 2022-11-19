@@ -12,7 +12,7 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind(("0.0.0.0", 9999))
 s.listen(5)
 print("Server is listening...")
-print("Server address: {}".format(s.getsockname()[0]))
+print("Server address: {}".format(socket.gethostbyname(socket.gethostname())))
 
 ## Create a list of clients that are connected to the server
 clients = []
