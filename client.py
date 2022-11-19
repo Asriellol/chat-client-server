@@ -8,7 +8,8 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 ## Connect to the server 
-s.connect(('127.0.0.1', 9999))
+server_address = input("What server address would you like to connect to?: ")
+s.connect((server_address, 9999))
 
 ## Get the client's name and send it to the server 
 name = input("Enter your name: ") 
@@ -26,9 +27,10 @@ def receiveMessages():
 
             print(message)  
 
-        except:  
-
-            continue  
+        except KeyboardInterrupt:
+            continue
+        except:
+            continue
 
         
 ## Create a new thread for receiving messages from the server 
@@ -42,7 +44,7 @@ while True:
 
     if message == "exit":  
 
-        s.send("exit".encode('utf-8'))  
+        s.send("User has disconnected".encode('utf-8'))  
 
         s.close()  
 
