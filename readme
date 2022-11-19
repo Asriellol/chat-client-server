@@ -1,2 +1,22 @@
-To launch this in heroku, simply use 
-heroku run python server.py
+Hello! If you're reading this, you've clicked on the link in my about me. 
+
+To use the Application, simply install python locally on your system, (you can figure it out I'm sure), Then click on "client.py"
+in this github, and either Download it, or "copy paste" it into a file named similarly. 
+
+Then? 
+It'll ask "what server would you like to connect to." 
+
+simply copy paste or type 
+173.255.232.168
+and press enter
+
+type your name, and BOOM.
+
+you've now been connected to the server.
+
+
+If you have any technical problems or suggestions, Text 207-500-9082. 
+
+eventually I ***will*** be adding more features and updating this Readme as things go on. 
+
+So... ENJOY!!
