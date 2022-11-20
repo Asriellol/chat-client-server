@@ -1,62 +1,98 @@
 import threading
-import sys
 import socket 
 import os
 
-## Client.py
+## If the user doesn't have tkinter, automatically install it.
+try:
+    from tkinter import *
+except:
+    os.system("pip install tkinter")
+    from tkinter import *
+
+## Hide the python console.
+os.system("title Chat room")
+os.system("mode con: cols=1 lines=1")
+
+## Create a GUI for the user to interact with.
+root = Tk()
+root.title("Chat room")
+root.geometry("400x500")
+
+## Create a frame for the text box.
+text_frame = Frame(root)
+
+## Create a scrollbar for the text box.
+scrollbar = Scrollbar(text_frame)
+
+## Create a text box for the user to see the messages.
+text_box = Text(text_frame, height=15, width=50, yscrollcommand=scrollbar.set)
+text_box.config(state=DISABLED)
+
+## Create a frame for the entry box.
+entry_frame = Frame(root)
+
+## Create an entry box for the user to type in.
+entry_field = Entry(entry_frame, width=50)
+
+## Create a send button for the user to send messages.
+send_button = Button(entry_frame, text="Send", width=10)
+
+## Pack the frames.
+text_frame.pack(side=TOP)
+entry_frame.pack(side=BOTTOM)
+
+## Pack the text box and scrollbar.
+text_box.pack(side=LEFT, fill=Y)
+scrollbar.pack(side=RIGHT, fill=Y)
+
+## Pack the entry box and send button.
+entry_field.pack(side=LEFT, fill=X, padx=5)
+send_button.pack(side=RIGHT)
+
+## Open a socket, connect to the server of the users choice at port 9999
 s = socket.socket()
-host = input(str("Please enter the hostname of the server (173.255.232.168): "))
-if host == "":
-    host = "173.255.232.168"
 port = 9999
-s.connect((host, port))
-os.system("title Chat room connected at " + host)
+s.connect(("173.255.232.168", port))
 print("Connected to chat server.")
 
-## Open a socket, connect to the server of the users choice at port 9999.
+## Get the Clients name and send it to the server.
 name = input(str("Please enter your name: "))
 s.send(name.encode('ascii'))
 
-## Get the Clients name and send it to the server.
+## Create a function to send messages.
+def send(event=None):
+    message = entry_field.get()
+    entry_field.delete(0, END)
+    s.send(message.encode('ascii'))
+    text_box.config(state=NORMAL)
+    text_box.insert(END, name + ": " + message + "\n")
+    text_box.see(END)
+    text_box.config(state=DISABLED)
+
+## Bind the send button to the send function.
+send_button.bind("<Button-1>", send)
+
+## Bind the enter key to the send function.
+entry_field.bind("<Return>", send)
+
+## Create a function to receive messages.
 def receive():
     while True:
-        message = s.recv(1024)
-        message = message.decode('ascii')
-        print(message)
+        try:
+            message = s.recv(1024)
+            message = message.decode('ascii')
+            text_box.config(state=NORMAL)
+            text_box.insert(END, message[message.find(":") + 1:] + "\n")
+            text_box.see(END)
+            text_box.config(state=DISABLED)
+        except:
+            text_box.config(state=NORMAL)
+            text_box.insert(END, "Server is offline.\n")
+            text_box.config(state=DISABLED)
+            break
 
 ## Create a new thread for receiving messages from the server.
 threading.Thread(target=receive).start()
 
-## Send messages to the server
-while True:
-    message = input(str(">> "))
-    message = message.encode('ascii')
-    s.send(message)
-
-## Receive messages from the server.
-def receive():
-    while True:
-        message = s.recv(1024)
-        message = message.decode('ascii')
-        print(message)
-
-## Create a new thread for receiving messages from the server.
-threading.Thread(target=receive).start()
-
-## When the user connects to the server, take their first message and set it as their name.
-name = conn.recv(1024)
-name = name.decode('ascii')
-
-
-
-## Check each message from the server, and collect the text stored in the beginning surrounded by <> and put it into an array called "Users"
-while True:
-    message = conn.recv(1024)
-    message = message.decode('ascii')
-    if "<" in message:
-        message = message.split("<")
-        message = message[1].split(">")
-        Users.append(message[0])
-
-
-print("Connected with " + name)
+## Start the GUI.
+root.mainloop()
