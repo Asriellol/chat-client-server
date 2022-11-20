@@ -13,20 +13,24 @@ print("Server is now listening on " + host + ":" + str(port))
 # Accept connections, and Create a list of all the clients that connect to the server.
 clients = []
 def clientThread(conn, addr):
+    name = conn.recv(1024)
+    name = name.decode('ascii')
+    print(name + " connected.")
+    broadcast(name + " connected.", conn)
     while True:
         try:
             message = conn.recv(1024)
             message = message.decode('ascii')
             if message:
-                print("<" + addr[0] + "> " + message)
-                message_to_send = "<" + addr[0] + "> " + message
+                print("<" + name + "> " + message)
+                message_to_send = "<" + name + "> " + message
                 broadcast(message_to_send, conn)
             else:
                 remove(conn)
-                print(str(addr[0]) + " disconnected.")
+                print(name + " disconnected.")
         except ConnectionResetError:
-            print(str(addr[0]) + " disconnected.")
-            broadcast(str(addr[0]) + " disconnected.", conn)
+            print(name + " disconnected.")
+            broadcast(name + " disconnected.", conn)
             remove(conn)
             break
 
