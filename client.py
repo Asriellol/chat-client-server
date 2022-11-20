@@ -5,7 +5,9 @@ import os
 
 ## Client.py
 s = socket.socket()
-host = input(str("Please enter the hostname of the server: "))
+host = input(str("Please enter the hostname of the server (173.255.232.168): "))
+if host == "":
+    host = "173.255.232.168"
 port = 9999
 s.connect((host, port))
 os.system("title Chat room connected at " + host)
