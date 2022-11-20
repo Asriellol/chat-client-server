@@ -1,22 +1,11 @@
-Hello! If you're reading this, you've clicked on the link in my about me. 
+Read me file.
 
-To use the Application, simply install python locally on your system, (you can figure it out I'm sure), Then click on "client.py"
-in this github, and either Download it, or "copy paste" it into a file named similarly. 
+Questions and Comments: Text 207-500-9082
 
-Then? 
-It'll ask "what server would you like to connect to." 
+This code creates a chat server that allows multiple clients to connect to it and chat with each other.
 
-simply copy paste or type 
-173.255.232.168
-and press enter
+To run the code, simply run the server.py file.
 
-type your name, and BOOM.
-
-you've now been connected to the server.
-
-
-If you have any technical problems or suggestions, Text 207-500-9082. 
-
-eventually I ***will*** be adding more features and updating this Readme as things go on. 
-
-So... ENJOY!!
+As a client, you'll instead simply run the client.py file, by pressing enter when it asks you for an IP it will auto-connect you to 
+the dedicated server, if you want to host your own server.
+figure it out (lol)
