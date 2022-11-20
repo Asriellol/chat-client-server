@@ -65,7 +65,7 @@ name_root.mainloop()
 ## Create a GUI for the user to interact with.
 root = Tk()
 root.title("Chat room")
-root.geometry("400x500")
+root.geometry("500x500")
 
 ## Create a frame for the text box.
 text_frame = Frame(root)
