@@ -13,6 +13,55 @@ except:
 os.system("title Chat room")
 os.system("mode con: cols=1 lines=1")
 
+## Create a GUI for the user to enter their name.
+name_root = Tk()
+name_root.title("Chat room")
+name_root.geometry("200x100")
+
+## Open a socket, connect to the server of the users choice at port 9999.
+s = socket.socket()
+port = 9999
+s.connect(("173.255.232.168", port))
+print("Connected to chat server.")
+
+## Create a frame for the name entry box.
+name_frame = Frame(name_root)
+
+## Create a label for the name entry box.
+name_label = Label(name_frame, text="Please enter your name:")
+
+## Create an entry box for the user to type in their name.
+name_entry = Entry(name_frame, width=20)
+
+## Create a send button for the user to send their name.
+name_button = Button(name_frame, text="Send", width=10)
+
+## Pack the frames.
+name_frame.pack(side=TOP)
+
+## Pack the label and entry box.
+name_label.pack(side=TOP)
+name_entry.pack(side=TOP)
+
+## Pack the send button.
+name_button.pack(side=BOTTOM)
+
+## Create a function to send the name.
+def send_name(event=None):
+    global name
+    name = name_entry.get()
+    s.send(name.encode('ascii'))
+    name_root.destroy()
+
+## Bind the send button to the send name function.
+name_button.bind("<Button-1>", send_name)
+
+## Bind the enter key to the send name function.
+name_entry.bind("<Return>", send_name)
+
+## Start the GUI.
+name_root.mainloop()
+
 ## Create a GUI for the user to interact with.
 root = Tk()
 root.title("Chat room")
@@ -48,16 +97,6 @@ scrollbar.pack(side=RIGHT, fill=Y)
 ## Pack the entry box and send button.
 entry_field.pack(side=LEFT, fill=X, padx=5)
 send_button.pack(side=RIGHT)
-
-## Open a socket, connect to the server of the users choice at port 9999
-s = socket.socket()
-port = 9999
-s.connect(("173.255.232.168", port))
-print("Connected to chat server.")
-
-## Get the Clients name and send it to the server.
-name = input(str("Please enter your name: "))
-s.send(name.encode('ascii'))
 
 ## Create a function to send messages.
 def send(event=None):
