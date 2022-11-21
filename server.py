@@ -12,27 +12,22 @@ def main():
     s.listen(10)
     print("Server is now listening on " + host + ":" + str(port))
 
+
+    # Send the chat history to the client.
+    def sendChatHistory(conn):
+        with open("chat_history.txt", "r") as f:
+            for line in f:
+                conn.send(line.encode('ascii'))
+
     clients = []
-    # If the file chat_history.txt exists, then open it and read the messages.
-    if os.path.exists("chat_history.txt"):
-        file = open("chat_history.txt", "r")
-        messages = file.readlines()
-        file.close()
-    # If the file chat_history.txt does not exist, then create it and write the messages to it.
-    else:
-        file = open("chat_history.txt", "w")
-        messages = []
-        file.close()
-        # Receive the name of the client and print it to the terminal.
+    # Receive the name of the client and print it to the terminal.
     def clientThread(conn, addr):
         name = conn.recv(1024)
         name = name.decode('ascii')
         print(name + " connected.")
         # Broadcast the connection of the new user to all other users in the chat room.
+        sendChatHistory(conn)
         broadcast(name + " connected.", conn)
-        # Send the last 20 messages to the client.
-        for message in messages:
-            conn.send((message + "\n").encode('ascii'))
         # Create a loop, that receives messages from clients and broadcasts them to all other users. Then start a new thread for each client that connects to the server.
         while True:
             try:
@@ -43,15 +38,9 @@ def main():
                 if message:
                     print("<" + name + "> " + message)
                     message_to_send = "<" + name + "> " + message
-                    messages.append(message_to_send)
-                    # Write the message to the file chat_history.txt.
-                    file = open("chat_history.txt", "a")
-                    file.write(message_to_send)
-                    file.close()
-                    # If the list of messages is longer than 20, then remove the oldest message.
-                    if len(messages) > 20:
-                        messages.pop(0)
                     broadcast(message_to_send, conn)
+                    with open("chat_history.txt", "a") as f:
+                        f.write(message_to_send + "\n")
                 # If the message is empty, then remove the client from the list of clients and print that they disconnected.
                 else:
                     remove(conn)
