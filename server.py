@@ -14,8 +14,8 @@ def main():
 
 
     # Send the chat history to the client.
-        if not os.path.exists("chat_history.txt"):
-            open("chat_history.txt", "w").close()
+    if not os.path.exists("chat_history.txt"):
+        open("chat_history.txt", "w").close()
     def sendChatHistory(conn):
         with open("chat_history.txt", "r") as f:
             for line in f:
