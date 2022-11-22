@@ -1,11 +1,4 @@
-Read me file.
-
-Questions and Comments: Text 207-500-9082
-
-This code creates a chat server that allows multiple clients to connect to it and chat with each other.
-
-To run the code, simply run the server.py file.
-
-As a client, you'll instead simply run the client.py file, by pressing enter when it asks you for an IP it will auto-connect you to 
-the dedicated server, if you want to host your own server.
-figure it out (lol)
+The current Nightly build isn't functional and has... alot of test shit. 
+So. 
+not reccomended to use. Lul. 
+it's normally where I completely re-write the server and client code 800 times.
